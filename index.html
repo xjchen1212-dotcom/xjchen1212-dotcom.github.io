@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小说作者百宝箱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .tool-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .tool-card:active {
+            transform: translateY(-4px);
+        }
+        
+        .tool-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .tool-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .tool-card {
+                padding: 30px 15px;
+            }
+            
+            .tool-icon {
+                font-size: 2.8rem;
+                margin-bottom: 15px;
+            }
+            
+            .tool-name {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">小说作者百宝箱</h1>
+            <p class="subtitle">晓读书（小红书、抖音）</p>
+        </div>
+        
+        <div class="tools-grid">
+            <a href="file:///Users/mac/Documents/code/index/0521yuliaoku/index.html" class="tool-card">
+                <span class="tool-icon">📚</span>
+                <div class="tool-name">小说语料库</div>
+            </a>
+            
+            <a href="file:///Users/mac/Documents/code/index/0528name/index.html" class="tool-card">
+                <span class="tool-icon">🎭</span>
+                <div class="tool-name">小说角色取名</div>
+            </a>
+            
+            <a href="file:///Users/mac/Documents/code/index/0530baizaoyin/index.html" class="tool-card">
+                <span class="tool-icon">⏱️</span>
+                <div class="tool-name">白噪音番茄钟</div>
+            </a>
+            
+            <a href="file:///Users/mac/Documents/code/index/0530renwuguanxi%20/yuanbao_html_20260530_wecWiR.html" class="tool-card">
+                <span class="tool-icon">👥</span>
+                <div class="tool-name">小说角色关系图</div>
+            </a>
+            
+            <a href="file:///Users/mac/Documents/code/index/linggan/index.html" class="tool-card">
+                <span class="tool-icon">💡</span>
+                <div class="tool-name">小说灵感生成</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 添加点击效果
+        document.querySelectorAll('.tool-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                this.style.transform = 'translateY(-8px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>
