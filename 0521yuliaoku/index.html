@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小说描写语料库 | 写作灵感助手</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-book-open"></i> 小说描写语料库</h1>
+            <p class="subtitle">灵感永不枯竭，描写信手拈来
+            制作者：晓读书（小红书、抖音）</p>
+        </header>
+<!-- 极简搜索框 -->
+<div class="simple-search">
+    <input type="text" id="searchInput" placeholder="输入关键词搜索...">
+    <button id="searchBtn">搜索</button>
+</div>
+     
+
+            <div class="filter-section">
+                <h3><i class="fas fa-filter"></i> 分类筛选（可多选）：</h3>
+                <div class="filter-group" id="categoryFilter">
+                    <label class="filter-item"><input type="checkbox" value="环境"><span>环境</span></label>
+                    <label class="filter-item"><input type="checkbox" value="动作"><span>动作</span></label>
+                    <label class="filter-item"><input type="checkbox" value="外貌"><span>外貌</span></label>
+                    <label class="filter-item"><input type="checkbox" value="心理"><span>心理</span></label>
+                    <label class="filter-item"><input type="checkbox" value="对话"><span>对话</span></label>
+                    <label class="filter-item"><input type="checkbox" value="其他"><span>其他</span></label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3><i class="fas fa-tags"></i> 标签（可多选）：</h3>
+                <div class="tag-groups">
+                    <div class="tag-group">
+                        <div class="group-header">
+                            <i class="fas fa-heart"></i> 核心情感
+                            <span class="group-count" id="emotionCount">0/8</span>
+                        </div>
+                        <div class="filter-group" data-group="emotion">
+                            <label class="filter-item"><input type="checkbox" value="悲伤"><span>悲伤</span></label>
+                            <label class="filter-item"><input type="checkbox" value="喜悦"><span>喜悦</span></label>
+                            <label class="filter-item"><input type="checkbox" value="愤怒"><span>愤怒</span></label>
+                            <label class="filter-item"><input type="checkbox" value="恐惧"><span>恐惧</span></label>
+                            <label class="filter-item"><input type="checkbox" value="期待"><span>期待</span></label>
+                            <label class="filter-item"><input type="checkbox" value="释然"><span>释然</span></label>
+                            <label class="filter-item"><input type="checkbox" value="孤独"><span>孤独</span></label>
+                            <label class="filter-item"><input type="checkbox" value="愧疚"><span>愧疚</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="tag-group">
+                        <div class="group-header">
+                            <i class="fas fa-cloud-sun"></i> 氛围场景
+                            <span class="group-count" id="sceneCount">0/8</span>
+                        </div>
+                        <div class="filter-group" data-group="scene">
+                            <label class="filter-item"><input type="checkbox" value="浪漫"><span>浪漫</span></label>
+                            <label class="filter-item"><input type="checkbox" value="悬疑"><span>悬疑</span></label>
+                            <label class="filter-item"><input type="checkbox" value="温馨"><span>温馨</span></label>
+                            <label class="filter-item"><input type="checkbox" value="紧张"><span>紧张</span></label>
+                            <label class="filter-item"><input type="checkbox" value="唯美"><span>唯美</span></label>
+                            <label class="filter-item"><input type="checkbox" value="幽默"><span>幽默</span></label>
+                            <label class="filter-item"><input type="checkbox" value="恐怖"><span>恐怖</span></label>
+                            <label class="filter-item"><input type="checkbox" value="刺激"><span>刺激</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="tag-group">
+                        <div class="group-header">
+                            <i class="fas fa-user"></i> 人物特质
+                            <span class="group-count" id="traitCount">0/8</span>
+                        </div>
+                        <div class="filter-group" data-group="trait">
+                            <label class="filter-item"><input type="checkbox" value="霸气"><span>霸气</span></label>
+                            <label class="filter-item"><input type="checkbox" value="温柔"><span>温柔</span></label>
+                            <label class="filter-item"><input type="checkbox" value="腹黑"><span>腹黑</span></label>
+                            <label class="filter-item"><input type="checkbox" value="纯情"><span>纯情</span></label>
+                            <label class="filter-item"><input type="checkbox" value="高冷"><span>高冷</span></label>
+                            <label class="filter-item"><input type="checkbox" value="阳光"><span>阳光</span></label>
+                            <label class="filter-item"><input type="checkbox" value="忧郁"><span>忧郁</span></label>
+                            <label class="filter-item"><input type="checkbox" value="不羁"><span>不羁</span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="selected-filters" id="selectedFilters">
+                <span>已选择：<span id="selectedTagsText">无筛选条件，显示全部</span></span>
+                <button id="clearFilters" class="clear-btn">清空筛选</button>
+            </div>
+        </div>
+
+        <div class="results-header">
+            <h3><i class="fas fa-list"></i> 描写片段 <span class="hint-text">（点击分类/标签开始筛选）</span></h3>
+            <div class="stats">
+                <span id="resultCount">共 500 条</span>
+                <span class="divider">|</span>
+                <span id="favoriteCount">收藏：0</span>
+            </div>
+        </div>
+
+        <div class="results-container grid-view" id="resultsContainer"></div>
+
+        <div class="toolbar">
+            <button id="randomBtn" class="toolbar-btn"><i class="fas fa-random"></i> 随机一条</button>
+            <button id="exportFavoritesBtn" class="toolbar-btn"><i class="fas fa-download"></i> 导出收藏</button>
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+                <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p class="disclaimer"><i class="fas fa-exclamation-circle"></i> 本工具仅提供写作参考，请勿直接复制用于商业用途，鼓励二次创作与个性化修改。</p>
+            <p class="copyright">© 2026 小说描写语料库 </p>
+        </footer>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="corpus.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

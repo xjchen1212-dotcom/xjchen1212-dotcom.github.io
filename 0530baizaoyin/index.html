@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白噪音番茄钟｜晓读书（小红书、抖音）</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎋</text></svg>">
+</head>
+ 
+<body>
+    <div class="container">
+        <!-- 当前时间显示 -->
+        <div class="time-display">
+            <div id="current-time" class="current-time">--:--</div>
+            <div class="date-display" id="current-date"></div>
+        </div>
+
+        <!-- 番茄钟区域 -->
+        <div class="pomodoro-section">
+            <div class="pomodoro-display">
+                <div class="timer-display" id="timer">25:00</div>
+                <div class="timer-label" id="timer-label">专注时间</div>
+            </div>
+            
+            <div class="pomodoro-controls">
+                <button id="start-btn" class="control-btn start-btn">
+                    <span class="btn-icon">▶</span>
+                    <span class="btn-text">开始</span>
+                </button>
+                <button id="pause-btn" class="control-btn pause-btn" disabled>
+                    <span class="btn-icon">❙❙</span>
+                    <span class="btn-text">暂停</span>
+                </button>
+                <button id="reset-btn" class="control-btn reset-btn">
+                    <span class="btn-icon">↻</span>
+                    <span class="btn-text">重置</span>
+                </button>
+            </div>
+            
+            <div class="pomodoro-status">
+                <div class="session-count">
+                    <span>轮次: </span>
+                    <span id="session-count">0</span>/4
+                </div>
+                <div class="mode-indicator" id="mode-indicator">专注中</div>
+            </div>
+        </div>
+
+        <!-- 白噪音控制区域 -->
+        <div class="sound-controls">
+            <h3>环境声音</h3>
+            
+            <div class="sound-buttons">
+                <button class="sound-btn active" data-sound="rain">
+                    <span class="sound-icon">🌧️</span>
+                    <span class="sound-label">雨声</span>
+                </button>
+                
+                <button class="sound-btn" data-sound="stream">
+                    <span class="sound-icon">🌊</span>
+                    <span class="sound-label">溪流</span>
+                </button>
+                
+                <button class="sound-btn" data-sound="fire">
+                    <span class="sound-icon">🔥</span>
+                    <span class="sound-label">篝火</span>
+                </button>
+                
+                <button class="sound-btn" data-sound="bell">
+                    <span class="sound-icon">🔔</span>
+                    <span class="sound-label">钟声</span>
+                </button>
+                
+                <button class="sound-btn" data-sound="white">
+                    <span class="sound-icon">⬜</span>
+                    <span class="sound-label">白噪音</span>
+                </button>
+                
+                <button class="sound-btn mute-btn" data-sound="none">
+                    <span class="sound-icon">🔇</span>
+                    <span class="sound-label">静音</span>
+                </button>
+            </div>
+            
+            <div class="volume-control">
+                <span class="volume-label">音量:</span>
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50">
+                <span class="volume-value" id="volume-value">50%</span>
+            </div>
+        </div>
+
+        <!-- 状态提示 -->
+        <div class="status-message" id="status-message">
+            点击开始按钮，进入专注时光
+        </div>
+    </div>
+
+    <!-- 音频元素 -->
+    <audio id="rain-audio" loop>
+        <source src="audio/rain.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="stream-audio" loop>
+        <source src="audio/stream.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="fire-audio" loop>
+        <source src="audio/fire.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bell-audio" loop>
+        <source src="audio/bell.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="white-audio" loop>
+        <source src="audio/white.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 通知音 -->
+    <audio id="start-sound" src="audio/start.mp3" preload="auto"></audio>
+    <audio id="end-sound" src="audio/end.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

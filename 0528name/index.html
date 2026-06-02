@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小说人物名生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --muted: #7f8c8d;
+            --success: #27ae60;
+            --border: #bdc3c7;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow);
+            overflow: hidden;
+        }
+        
+        /* 头部 */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 32px;
+            color: #e74c3c;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .tagline {
+            color: #bdc3c7;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        /* 主要内容区 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 控制面板 */
+        .control-panel {
+            padding: 30px;
+            background: #f8f9fa;
+            border-right: 1px solid var(--border);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title i {
+            color: var(--accent);
+        }
+        
+        /* 选项组 */
+        .option-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .option-btn {
+            padding: 10px 5px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .option-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* 数字选择器 */
+        .number-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .number-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .number-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        .number-btn:hover:not(.active) {
+            border-color: var(--accent);
+        }
+        
+        /* 姓氏控制 */
+        .surname-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .surname-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .surname-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+        
+        /* 生成按钮 */
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .generate-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 结果显示面板 */
+        .result-panel {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 今日灵感 */
+        .inspiration-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .inspiration-title {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .inspiration-name {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-family: "STKaiti", "SimSun", serif;
+        }
+        
+        .inspiration-desc {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        /* 结果区域 */
+        .results-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .results-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .result-count {
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        /* 名字列表 */
+        .name-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .name-item {
+            padding: 12px 15px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .name-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .name-text {
+            font-size: 20px;
+            font-weight: 500;
+            font-family: "STKaiti", "SimSun", serif;
+        }
+        
+        .name-tags {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .name-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: #f1f2f6;
+            border-radius: 10px;
+            color: var(--muted);
+        }
+        
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        .action-btn.primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        .action-btn.primary:hover {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* 滚动条 */
+        .name-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .name-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .name-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .control-panel, .result-panel {
+                padding: 20px;
+            }
+            
+            .option-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .inspiration-name {
+                font-size: 24px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-feather-alt"></i>
+                <h1>小说人物名生成器</h1>
+            </div>
+            <p class="tagline">制作：晓读书（小红书、抖音）</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- 左侧控制面板 -->
+            <div class="control-panel">
+                <!-- 风格选择 -->
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-palette"></i>
+                        风格选择
+                    </div>
+                    <div class="option-group">
+                        <div class="option-btn active" data-style="all">全部</div>
+                        <div class="option-btn" data-style="ancient">古风</div>
+                        <div class="option-btn" data-style="modern">现代</div>
+                        <div class="option-btn" data-style="xianxia">仙侠</div>
+                        <div class="option-btn" data-style="fantasy">奇幻</div>
+                        <div class="option-btn" data-style="wuxia">武侠</div>
+                    </div>
+                </div>
+                
+                <!-- 性别选择 -->
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-venus-mars"></i>
+                        性别
+                    </div>
+                    <div class="option-group">
+                        <div class="option-btn active" data-gender="male">男性</div>
+                        <div class="option-btn" data-gender="female">女性</div>
+                        <div class="option-btn" data-gender="neutral">中性</div>
+                        <div class="option-btn" data-gender="random">随机</div>
+                    </div>
+                </div>
+                
+                <!-- 字数选择 -->
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-text-height"></i>
+                        名字字数
+                    </div>
+                    <div class="number-selector">
+                        <button class="number-btn active" data-length="1">1</button>
+                        <button class="number-btn" data-length="2">2</button>
+                        <button class="number-btn" data-length="3">3</button>
+                        <button class="number-btn" data-length="4">4</button>
+                    </div>
+                </div>
+                
+                <!-- 生成个数 -->
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-copy"></i>
+                        生成个数
+                    </div>
+                    <div class="number-selector">
+                        <button class="number-btn active" data-count="1">1</button>
+                        <button class="number-btn" data-count="5">5</button>
+                        <button class="number-btn" data-count="10">10</button>
+                    </div>
+                </div>
+                
+                <!-- 姓氏控制 -->
+                <div class="section">
+                    <div class="section-title">
+                        <i class="fas fa-user-tag"></i>
+                        姓氏控制
+                    </div>
+                    <div class="option-group">
+                        <button class="option-btn active" id="randomSurname">随机姓氏</button>
+                        <button class="option-btn" id="fixedSurname">固定姓氏</button>
+                    </div>
+                    <div class="surname-control">
+                        <input type="text" class="surname-input" id="surnameInput" placeholder="输入固定姓氏，如：李、慕容" disabled>
+                    </div>
+                </div>
+                
+                <!-- 生成按钮 -->
+                <button class="generate-btn" id="generateBtn">
+                    <i class="fas fa-magic"></i>
+                    生成名字
+                </button>
+            </div>
+            
+            <!-- 右侧结果面板 -->
+            <div class="result-panel">
+                <!-- 今日灵感 -->
+                <div class="inspiration-card">
+                    <div class="inspiration-title">
+                        <i class="fas fa-lightbulb"></i>
+                        今日灵感
+                    </div>
+                    <div class="inspiration-name" id="inspirationName">叶知秋</div>
+                    <div class="inspiration-desc" id="inspirationDesc">
+                        "一叶知秋"的意境，适合性格沉稳、观察敏锐的智者或谋士角色。名字富有诗意和哲理。
+                    </div>
+                </div>
+                
+                <!-- 生成结果 -->
+                <div class="results-area">
+                    <div class="results-title">
+                        <span>生成结果</span>
+                        <span class="result-count" id="resultCount">0 个</span>
+                    </div>
+                    
+                    <div class="name-list" id="nameList">
+                        <!-- 名字会动态插入到这里 -->
+                        <div class="empty-state">
+                            <p style="text-align: center; color: var(--muted); padding: 40px 20px;">
+                                <i class="fas fa-magic" style="font-size: 40px; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                                点击"生成名字"按钮开始
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 操作按钮 -->
+                    <div class="action-buttons">
+                        <button class="action-btn" id="copyBtn">
+                            <i class="far fa-copy"></i>
+                            复制全部
+                        </button>
+                        <button class="action-btn primary" id="regenerateBtn">
+                            <i class="fas fa-redo"></i>
+                            重新生成
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 @晓读书</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========== 完整的名字数据库 ==========
+        const nameDatabase = {
+            // 225个姓氏
+            surnames: {
+                // 常见百家姓（100个）
+                common: [
+                    "赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈",
+                    "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许",
+                    "何", "吕", "施", "张", "孔", "曹", "严", "华", "金", "魏",
+                    "陶", "姜", "戚", "谢", "邹", "喻", "柏", "水", "窦", "章",
+                    "云", "苏", "潘", "葛", "奚", "范", "彭", "郎", "鲁", "韦",
+                    "昌", "马", "苗", "凤", "花", "方", "俞", "任", "袁", "柳",
+                    "酆", "鲍", "史", "唐", "费", "廉", "岑", "薛", "雷", "贺",
+                    "倪", "汤", "滕", "殷", "罗", "毕", "郝", "邬", "安", "常",
+                    "乐", "于", "时", "傅", "皮", "卞", "齐", "康", "伍", "余",
+                    "元", "卜", "顾", "孟", "平", "黄", "和", "穆", "萧", "尹"
+                ],
+                
+                // 文艺小说常用姓（50个）
+                literary: [
+                    "叶", "苏", "顾", "陆", "林", "萧", "沈", "楚", "江", "白",
+                    "夏", "宁", "安", "温", "傅", "程", "宋", "乔", "纪", "季",
+                    "余", "尹", "文", "花", "岳", "莫", "凌", "简", "裴", "晏",
+                    "谢", "秦", "唐", "颜", "薛", "柳", "梅", "韩", "燕", "蓝",
+                    "阮", "童", "路", "舒", "柯", "易", "庄", "钟", "聂", "欧"
+                ],
+                
+                // 复姓（30个）
+                compound: [
+                    "欧阳", "司马", "上官", "东方", "南宫", "西门", "慕容", "令狐",
+                    "独孤", "皇甫", "诸葛", "尉迟", "司徒", "司空", "夏侯", "纳兰",
+                    "完颜", "拓跋", "轩辕", "百里", "端木", "巫马", "公羊", "澹台",
+                    "公冶", "宗政", "濮阳", "淳于", "单于", "太史"
+                ],
+                
+                // 稀有优美姓（25个）
+                rare: [
+                    "亓", "乜", "仉", "亓官", "琴", "归", "海", "年", "爱", "阳",
+                    "佟", "言", "福", "南", "门", "别", "庄", "晏", "柴", "瞿",
+                    "阎", "连", "习", "容", "向"
+                ],
+                
+                // 单字意境姓（20个）
+                poetic: [
+                    "云", "风", "花", "雪", "月", "星", "辰", "雨", "霜", "露",
+                    "竹", "梅", "兰", "菊", "荷", "柳", "枫", "石", "玉", "金"
+                ]
+            },
+            
+            // 名字字库（120个汉字）
+            givenNames: {
+                male: {
+                    ancient: ["逸", "辰", "轩", "宇", "渊", "墨", "宸", "睿", "瑾", "瑜"],
+                    modern: ["浩", "博", "涛", "杰", "俊", "昊", "宇", "鹏", "鑫", "磊"],
+                    xianxia: ["玄", "冥", "昊", "苍", "渊", "凌", "霄", "云", "风", "雷"],
+                    fantasy: ["兰", "斯", "凯", "尔", "雷", "恩", "亚", "瑟", "莱", "昂"],
+                    wuxia: ["傲", "天", "笑", "尘", "风", "云", "剑", "心", "刀", "魂"]
+                },
+                
+                female: {
+                    ancient: ["芷", "若", "雨", "萱", "琳", "瑶", "琴", "瑟", "诗", "画"],
+                    modern: ["婷", "娜", "娟", "莉", "芳", "燕", "玲", "丹", "萍", "颖"],
+                    xianxia: ["灵", "韵", "芷", "兰", "蕙", "芯", "蕊", "蕾", "雪", "冰"],
+                    fantasy: ["安", "娜", "莉", "莎", "蒂", "妮", "娅", "莉", "丝", "特"],
+                    wuxia: ["嫣", "然", "婷", "婷", "翩", "翩", "婉", "婉", "霜", "雪"]
+                },
+                
+                neutral: {
+                    nature: ["天", "地", "山", "川", "云", "风", "雨", "雪", "星", "辰"],
+                    abstract: ["道", "德", "仁", "义", "礼", "智", "信", "忠", "孝", "节"]
+                }
+            },
+            
+            meanings: {
+                "逸": "超脱不凡，潇洒飘逸",
+                "辰": "日月星辰，时光流转",
+                "轩": "气宇轩昂，风度不凡",
+                "芷": "香草美人，品德高洁",
+                "若": "温婉如玉，气质若兰",
+                "浩": "浩瀚无边，胸怀宽广",
+                "婷": "婷婷玉立，姿态优美"
+            }
+        };
+        
+        // 风格描述
+        const styleNames = {
+            "ancient": "古风",
+            "modern": "现代",
+            "xianxia": "仙侠",
+            "fantasy": "奇幻",
+            "wuxia": "武侠",
+            "all": "通用"
+        };
+        
+        // 性别描述
+        const genderNames = {
+            "male": "男",
+            "female": "女",
+            "neutral": "中",
+            "random": "随"
+        };
+        
+        // 灵感名字库
+        const inspirationNames = [
+            { name: "叶知秋", desc: "一叶知秋，适合沉稳内敛的智者角色。" },
+            { name: "苏墨言", desc: "墨喻才华，言表谈吐，适合儒雅学者。" },
+            { name: "林清月", desc: "清冷如月，适合气质清冷的女性角色。" },
+            { name: "陆星河", desc: "星河璀璨，适合志向远大的青年才俊。" },
+            { name: "慕容雪", desc: "慕容为姓，雪为名，适合高贵冷艳的角色。" },
+            { name: "江晚吟", desc: "江边晚吟，适合忧郁文艺的诗人形象。" },
+            { name: "沈逸尘", desc: "超逸出尘，适合不食人间烟火的仙人。" },
+            { name: "白浅月", desc: "浅月如勾，适合温柔婉约的大家闺秀。" }
+        ];
+        
+        // 应用状态
+        let currentState = {
+            style: "all",
+            gender: "male",
+            length: 1,
+            count: 1,
+            surnameType: "random",
+            fixedSurname: ""
+        };
+        
+        // DOM元素
+        const elements = {
+            styleBtns: document.querySelectorAll('[data-style]'),
+            genderBtns: document.querySelectorAll('[data-gender]'),
+            lengthBtns: document.querySelectorAll('[data-length]'),
+            countBtns: document.querySelectorAll('[data-count]'),
+            randomSurname: document.getElementById('randomSurname'),
+            fixedSurname: document.getElementById('fixedSurname'),
+            surnameInput: document.getElementById('surnameInput'),
+            generateBtn: document.getElementById('generateBtn'),
+            inspirationName: document.getElementById('inspirationName'),
+            inspirationDesc: document.getElementById('inspirationDesc'),
+            nameList: document.getElementById('nameList'),
+            resultCount: document.getElementById('resultCount'),
+            copyBtn: document.getElementById('copyBtn'),
+            regenerateBtn: document.getElementById('regenerateBtn')
+        };
+        
+        // 工具函数
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+        
+        // 智能姓氏选择（根据风格调整权重）
+        function getSurname() {
+            if (currentState.surnameType === "fixed" && currentState.fixedSurname) {
+                return currentState.fixedSurname;
+            }
+            
+            // 不同风格的姓氏权重配置
+            const styleWeights = {
+                ancient: { common: 0.3, literary: 0.3, compound: 0.3, rare: 0.05, poetic: 0.05 },
+                xianxia: { common: 0.1, literary: 0.3, compound: 0.4, rare: 0.1, poetic: 0.1 },
+                modern: { common: 0.7, literary: 0.2, compound: 0, rare: 0.05, poetic: 0.05 },
+                fantasy: { common: 0.2, literary: 0.3, compound: 0.3, rare: 0.1, poetic: 0.1 },
+                wuxia: { common: 0.4, literary: 0.3, compound: 0.2, rare: 0.05, poetic: 0.05 },
+                all: { common: 0.5, literary: 0.25, compound: 0.15, rare: 0.05, poetic: 0.05 }
+            };
+            
+            const weights = styleWeights[currentState.style] || styleWeights.all;
+            const random = Math.random();
+            
+            let type = 'common';
+            if (random < weights.common) {
+                type = 'common';
+            } else if (random < weights.common + weights.literary) {
+                type = 'literary';
+            } else if (random < weights.common + weights.literary + weights.compound) {
+                type = 'compound';
+            } else if (random < weights.common + weights.literary + weights.compound + weights.rare) {
+                type = 'rare';
+            } else {
+                type = 'poetic';
+            }
+            
+            return getRandomItem(nameDatabase.surnames[type]);
+        }
+        
+        function getRandomChar(gender, style) {
+            let pool = nameDatabase.givenNames[gender];
+            if (!pool) pool = nameDatabase.givenNames.male;
+            
+            if (style === "all") {
+                // 合并所有风格
+                const allChars = [];
+                Object.values(pool).forEach(chars => {
+                    allChars.push(...chars);
+                });
+                return getRandomItem(allChars);
+            } else {
+                return getRandomItem(pool[style] || pool.ancient || pool.nature);
+            }
+        }
+        
+        function generateName() {
+            const surname = getSurname();
+            let givenName = "";
+            
+            for (let i = 0; i < currentState.length; i++) {
+                let gender = currentState.gender;
+                if (gender === "random") {
+                    const genders = ["male", "female", "neutral"];
+                    gender = getRandomItem(genders);
+                }
+                givenName += getRandomChar(gender, currentState.style);
+            }
+            
+            return surname + givenName;
+        }
+        
+        function generateNames(count) {
+            const names = [];
+            for (let i = 0; i < count; i++) {
+                names.push(generateName());
+            }
+            return [...new Set(names)]; // 去重
+        }
+        
+        function updateInspiration() {
+            const today = new Date().getDate(); // 用日期作为随机种子
+            const inspiration = inspirationNames[today % inspirationNames.length];
+            elements.inspirationName.textContent = inspiration.name;
+            elements.inspirationDesc.textContent = inspiration.desc;
+        }
+        
+        function displayNames(names) {
+            elements.nameList.innerHTML = '';
+            elements.resultCount.textContent = names.length + ' 个';
+            
+            if (names.length === 0) {
+                elements.nameList.innerHTML = `
+                    <div style="text-align: center; color: #7f8c8d; padding: 40px 20px;">
+                        未生成名字
+                    </div>
+                `;
+                return;
+            }
+            
+            names.forEach((name, index) => {
+                const item = document.createElement('div');
+                item.className = 'name-item';
+                item.innerHTML = `
+                    <div class="name-text">${name}</div>
+                    <div class="name-tags">
+                        <span class="name-tag">${styleNames[currentState.style]}</span>
+                        <span class="name-tag">${genderNames[currentState.gender]}</span>
+                        <span class="name-tag">${currentState.length}字</span>
+                    </div>
+                `;
+                elements.nameList.appendChild(item);
+            });
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制到剪贴板！');
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制。');
+            });
+        }
+        
+        // 事件处理
+        function initEventListeners() {
+            // 风格选择
+            elements.styleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.styleBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentState.style = btn.dataset.style;
+                });
+            });
+            
+            // 性别选择
+            elements.genderBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.genderBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentState.gender = btn.dataset.gender;
+                });
+            });
+            
+            // 字数选择
+            elements.lengthBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.lengthBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentState.length = parseInt(btn.dataset.length);
+                });
+            });
+            
+            // 生成个数
+            elements.countBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.countBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentState.count = parseInt(btn.dataset.count);
+                });
+            });
+            
+            // 姓氏控制
+            elements.randomSurname.addEventListener('click', () => {
+                elements.randomSurname.classList.add('active');
+                elements.fixedSurname.classList.remove('active');
+                elements.surnameInput.disabled = true;
+                currentState.surnameType = "random";
+            });
+            
+            elements.fixedSurname.addEventListener('click', () => {
+                elements.fixedSurname.classList.add('active');
+                elements.randomSurname.classList.remove('active');
+                elements.surnameInput.disabled = false;
+                elements.surnameInput.focus();
+                currentState.surnameType = "fixed";
+            });
+            
+            // 姓氏输入
+            elements.surnameInput.addEventListener('input', (e) => {
+                currentState.fixedSurname = e.target.value.trim();
+            });
+            
+            // 生成按钮
+            elements.generateBtn.addEventListener('click', () => {
+                const names = generateNames(currentState.count);
+                displayNames(names);
+            });
+            
+            // 复制按钮
+            elements.copyBtn.addEventListener('click', () => {
+                const nameItems = elements.nameList.querySelectorAll('.name-text');
+                if (nameItems.length === 0) {
+                    alert('没有可复制的内容');
+                    return;
+                }
+                
+                const names = Array.from(nameItems).map(item => item.textContent).join('\n');
+                copyToClipboard(names);
+            });
+            
+            // 重新生成
+            elements.regenerateBtn.addEventListener('click', () => {
+                elements.generateBtn.click();
+            });
+            
+            // 键盘快捷键
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.target.matches('input, textarea')) {
+                    elements.generateBtn.click();
+                }
+                if (e.key === ' ' && !e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    elements.generateBtn.click();
+                }
+            });
+        }
+        
+        // 使用示例展示
+        function showExamples() {
+            const examples = [
+                { name: "欧阳逸尘", desc: "复姓+古风，适合仙侠主角" },
+                { name: "林清月", desc: "文艺姓+自然名，适合女配" },
+                { name: "慕容雪", desc: "复姓+单字，适合高冷角色" },
+                { name: "叶知秋", desc: "意境姓+诗意名，适合智者" }
+            ];
+            
+            const exampleHtml = examples.map(ex => `
+                <div style="margin-bottom: 8px; padding: 8px; background: #f8f9fa; border-radius: 6px;">
+                    <strong>${ex.name}</strong>: ${ex.desc}
+                </div>
+            `).join('');
+            
+            if (elements.nameList.querySelector('.empty-state')) {
+                elements.nameList.innerHTML = `
+                    <div style="padding: 15px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">示例名字：</h4>
+                        ${exampleHtml}
+                        <p style="margin-top: 15px; color: var(--muted); font-size: 12px;">
+                            点击上方"生成名字"按钮开始生成
+                        </p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 初始化
+        function init() {
+            updateInspiration();
+            initEventListeners();
+            showExamples();
+            
+            // 显示初始状态
+            elements.resultCount.textContent = "示例";
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
